@@ -14,12 +14,16 @@
                 <h1 class="card-title text-center mb-4">Betting Levels Calculator</h1>
                 <form id="bettingForm">
                     <div class="mb-3">
-                        <label for="desiredProfit" class="form-label">Desired Profit</label>
+                        <label for="desiredProfit" class="form-label">Desired Profit (Rs)</label>
                         <input type="number" class="form-control" id="desiredProfit" placeholder="Enter profit (e.g., 10)" required>
                     </div>
                     <div class="mb-3">
                         <label for="takeProfitMultiplier" class="form-label">Cash Out at X</label>
-                        <input type="number" class="form-control" id="takeProfitMultiplier" placeholder="Level at which you want to cash out (e.g. 2x 3x 4x etc)" required>
+                        <input type="number" class="form-control" id="takeProfitMultiplier" placeholder="Enter Cash Out Multiplier X, (e.g. 3x 4x 5x)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="maximumLoss" class="form-label">Maximum Loss (Rs)</label>
+                        <input type="number" class="form-control" id="maximumLoss" placeholder="Enter max loss (default 1000)" value="1000" required>
                     </div>
                     <button type="button" class="btn btn-primary w-100" onclick="calculateBettingLevels()">Calculate</button>
                 </form>
@@ -51,23 +55,30 @@
         function calculateBettingLevels() {
             const desiredProfit = parseFloat(document.getElementById("desiredProfit").value);
             const takeProfitMultiplier = parseFloat(document.getElementById("takeProfitMultiplier").value);
+            const maximumLoss = parseFloat(document.getElementById("maximumLoss").value);
             const resultTableBody = document.getElementById("resultTableBody");
             
             // Clear previous results
             resultTableBody.innerHTML = "";
 
-            if (isNaN(desiredProfit) || isNaN(takeProfitMultiplier) || desiredProfit <= 0 || takeProfitMultiplier <= 0) {
-                alert("Please enter valid values for desired profit and multiplier!");
+            if (isNaN(desiredProfit) || isNaN(takeProfitMultiplier) || isNaN(maximumLoss) || desiredProfit <= 0 || takeProfitMultiplier <= 0 || maximumLoss <= 0) {
+                alert("Please enter valid values for desired profit, multiplier, and maximum loss!");
                 return;
             }
 
             let lossSoFar = 0;
             let level = 1;
 
-            // Loop to calculate up to 20 levels
-            while (level <= 20) {
+            // Loop to calculate levels until maximum loss is reached
+            while (lossSoFar <= maximumLoss) {
                 const betAmount = Math.ceil((desiredProfit + lossSoFar) / (takeProfitMultiplier - 1));
                 lossSoFar += betAmount;
+
+                // Break if the loss so far exceeds maximum loss
+                if (lossSoFar > maximumLoss) {
+                    break;
+                }
+
                 const profitIfWon = betAmount * takeProfitMultiplier - lossSoFar;
 
                 const row = `
