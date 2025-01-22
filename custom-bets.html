@@ -47,7 +47,6 @@
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary mt-3" onclick="addTableRow()">+</button>
     </div>
 
     <script>
@@ -65,7 +64,7 @@
 
             tableBody.appendChild(newRow);
 
-            // Re-attach the event listeners to new input fields
+            // Reattach input listeners to the new row
             attachInputListeners();
         }
 
@@ -83,11 +82,18 @@
                 row.cells[2].textContent = profitIfWon > 0 ? profitIfWon : 0;
                 row.cells[3].textContent = totalLoss;
             });
+
+            // Check if the last row's input has a value and add a new row if needed
+            const lastInput = inputs[inputs.length - 1];
+            if (lastInput && lastInput.value.trim() !== "") {
+                addTableRow();
+            }
         }
 
         function attachInputListeners() {
             const inputs = document.querySelectorAll('.bet-input');
             inputs.forEach(input => {
+                input.removeEventListener('input', updateTable); // Avoid duplicate listeners
                 input.addEventListener('input', updateTable);
             });
         }
