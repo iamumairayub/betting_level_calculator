@@ -41,7 +41,7 @@
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount" onchange="updateTable()"></td>
+                    <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount"></td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
@@ -58,12 +58,15 @@
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${rowCount + 1}</td>
-                <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount" onchange="updateTable()"></td>
+                <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount"></td>
                 <td>0</td>
                 <td>0</td>
             `;
 
             tableBody.appendChild(newRow);
+
+            // Re-attach the event listeners to new input fields
+            attachInputListeners();
         }
 
         function updateTable() {
@@ -82,8 +85,18 @@
             });
         }
 
-        // Ensure the table updates on page load if there are pre-filled inputs
-        document.addEventListener('DOMContentLoaded', updateTable);
+        function attachInputListeners() {
+            const inputs = document.querySelectorAll('.bet-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateTable);
+            });
+        }
+
+        // Attach listeners on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            attachInputListeners();
+            updateTable(); // Update if there are pre-filled values
+        });
     </script>
 </body>
 </html>
