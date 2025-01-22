@@ -24,6 +24,34 @@
         th {
             background-color: #1f1f1f;
         }
+        #betting-levels-box {
+            margin-top: 20px;
+            background-color: #1f1f1f;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #betting-levels {
+            flex: 1;
+            font-size: 1.2em;
+            color: #ffffff;
+            padding-right: 10px;
+            cursor: text;
+            user-select: text;
+        }
+        #copy-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #copy-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -47,6 +75,11 @@
                 </tr>
             </tbody>
         </table>
+
+        <div id="betting-levels-box">
+            <div id="betting-levels" onclick="selectBettingLevels()"></div>
+            <button id="copy-button" onclick="copyToClipboard()">Copy</button>
+        </div>
     </div>
 
     <script>
@@ -73,6 +106,8 @@
             const tableBody = document.querySelector('#betting-table tbody');
 
             let totalLoss = 0;
+            const bettingLevels = [];
+
             inputs.forEach((input, index) => {
                 const betAmount = parseFloat(input.value) || 0;
                 const profitIfWon = betAmount - totalLoss;
@@ -81,7 +116,14 @@
                 const row = tableBody.rows[index];
                 row.cells[2].textContent = profitIfWon > 0 ? profitIfWon : 0;
                 row.cells[3].textContent = totalLoss;
+
+                if (betAmount > 0) {
+                    bettingLevels.push(betAmount);
+                }
             });
+
+            // Update the betting levels display box
+            document.getElementById('betting-levels').textContent = bettingLevels.join('+');
 
             // Check if the last row's input has a value and add a new row if needed
             const lastInput = inputs[inputs.length - 1];
@@ -95,6 +137,22 @@
             inputs.forEach(input => {
                 input.removeEventListener('input', updateTable); // Avoid duplicate listeners
                 input.addEventListener('input', updateTable);
+            });
+        }
+
+        function selectBettingLevels() {
+            const bettingLevels = document.getElementById('betting-levels');
+            const range = document.createRange();
+            range.selectNodeContents(bettingLevels);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        function copyToClipboard() {
+            const bettingLevels = document.getElementById('betting-levels').textContent;
+            navigator.clipboard.writeText(bettingLevels).then(() => {
+                alert('Copied to clipboard!');
             });
         }
 
