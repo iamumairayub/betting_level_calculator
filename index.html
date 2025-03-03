@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Themed Page</title>
+    <title>Betting Levels Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
@@ -15,9 +15,10 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            text-align: center;
+            padding: 20px;
         }
         .link-container {
-            text-align: center;
             margin-top: 20px;
         }
         .link {
@@ -39,12 +40,18 @@
         .link i {
             margin-right: 10px;
         }
+        .description {
+            max-width: 600px;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #bbb;
+        }
     </style>
 </head>
 <body>
-    <h1 class="text-center mb-4">Welcome to Betting Level Calculator</h1>
+    <h1 class="text-center mb-4">Welcome to Betting Levels Calculator</h1>
+    <p class="description">This tool helps users calculate betting levels based on their starting bet, profit goals, and bet type. It supports multiples and adjustable bets while considering profit retention or fixed profits per level.</p>
     <div class="link-container">
-        <a href="/betting_level_calculator/aviator.html" class="link"><i class="bi bi-airplane"></i> Aviator</a>
         <a href="/betting_level_calculator/custom-bets.html" class="link"><i class="bi bi-cash-stack"></i> Custom Bets</a>
     </div>
 </body>
