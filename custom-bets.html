@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -131,7 +132,7 @@
 
                 <div class="col-md-3">
                     <label class="form-label">Game's Winning Multiplier</label>
-                    <input type="number" id="winning-multiplier" class="form-control" placeholder="Enter multiplier">
+                    <input type="number" id="winning-multiplier" class="form-control" placeholder="Enter multiplier" value="1.98">
                 </div>
 
                 <div class="col-md-3">
@@ -144,20 +145,27 @@
             <button class="btn btn-primary" onclick="generateVioletLevels()">Create Levels</button>
         </div>
 
+        <!-- Enter Custom Amounts Section -->
         <div class="section">
-            <h3 class="text-center">Betting Levels</h3>
-            <table class="table table-dark table-bordered" id="betting-table">
+            <h3 class="text-center">Enter Custom Amounts</h3>
+            <table class="table table-dark table-bordered mt-4" id="betting-table">
                 <thead>
                     <tr>
                         <th>Level</th>
                         <th>Bet Amount</th>
-                        <th>Net Profit if Won</th>
+                        <th>Profit if Won</th>
                         <th>Total Loss if Lost</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount"></td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
             </table>
-        </div>
 
         <div id="betting-levels-box">
             <div id="betting-levels" onclick="selectBettingLevels()"></div>
@@ -210,6 +218,99 @@
             }
         }
 
+
+        function addTableRow() {
+            const tableBody = document.querySelector('#betting-table tbody');
+            const rowCount = tableBody.rows.length;
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td><input type="number" class="form-control bet-input" placeholder="Enter bet amount"></td>
+                <td>0</td>
+                <td>0</td>
+            `;
+
+            tableBody.appendChild(newRow);
+
+            attachInputListeners();
+        }
+
+        function updateTable() {
+            const inputs = document.querySelectorAll('.bet-input');
+            const tableBody = document.querySelector('#betting-table tbody');
+            const multiplier = parseFloat(document.getElementById('winning-multiplier').value) || 1;
+
+            let totalLoss = 0;
+            const bettingLevels = [];
+
+            inputs.forEach((input, index) => {
+                const betAmount = Math.round(parseFloat(input.value) || 0); // Round to integer
+                const profitIfWon = (betAmount * multiplier) - totalLoss;
+                totalLoss += betAmount;
+
+                const row = tableBody.rows[index];
+                row.cells[2].textContent = profitIfWon > 0 ? profitIfWon : 0;
+                row.cells[3].textContent = totalLoss;
+
+                if (betAmount > 0) {
+                    bettingLevels.push(betAmount);
+                }
+            });
+
+            document.getElementById('betting-levels').textContent = bettingLevels.join('+');
+
+            const lastInput = inputs[inputs.length - 1];
+            if (lastInput && lastInput.value.trim() !== "") {
+                addTableRow();
+            }
+        }
+
+        function attachInputListeners() {
+            const inputs = document.querySelectorAll('.bet-input');
+            inputs.forEach(input => {
+                input.removeEventListener('input', updateTable);
+                input.addEventListener('input', updateTable);
+            });
+        }
+
+        function generateLevels() {
+            const startingBet = Math.round(parseFloat(document.getElementById('starting-bet').value) || 0);
+            const multiplier = parseFloat(document.getElementById('multiplier').value) || 1;
+            const totalFunds = Math.round(parseFloat(document.getElementById('total-funds').value) || 0);
+
+            const tableBody = document.querySelector('#betting-table tbody');
+            tableBody.innerHTML = '';
+
+            let totalLoss = 0;
+            let currentBet = startingBet;
+            let level = 1;
+
+            while (totalLoss + currentBet <= totalFunds) {
+                const profitIfWon = currentBet - totalLoss;
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${level}</td>
+                    <td><input type="number" class="form-control bet-input" value="${currentBet}" placeholder="Enter bet amount"></td>
+                    <td>${profitIfWon > 0 ? profitIfWon : 0}</td>
+                    <td>${totalLoss + currentBet}</td>
+                `;
+                tableBody.appendChild(newRow);
+
+                totalLoss += currentBet;
+                currentBet = Math.round(currentBet * multiplier); // Round to integer
+                level++;
+            }
+
+            attachInputListeners();
+            updateTable();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            attachInputListeners();
+            updateTable();
+        });
+
         function selectBettingLevels() {
             const bettingLevels = document.getElementById('betting-levels');
             const range = document.createRange();
@@ -218,6 +319,7 @@
             window.getSelection().addRange(range);
         }
 
+        
         function copyToClipboard() {
             navigator.clipboard.writeText(document.getElementById('betting-levels').textContent).then(() => {
                 alert('Copied to clipboard!');
