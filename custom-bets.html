@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -193,7 +194,7 @@
                 if (level === 1 && startingBet) {
                     currentBet = startingBet;
                 } else {
-                    let requiredProfit = profitType === 'fixed-profit' ? minProfit : totalLoss + minProfit;
+                    let requiredProfit = profitType === 'fixed-profit' ? minProfit : minProfit * level;
                     currentBet = Math.ceil((totalLoss + requiredProfit) / ((multiplier) - 1));
                     
                     if (betType === "multiples" && startingBet) {
