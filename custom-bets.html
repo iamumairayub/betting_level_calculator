@@ -133,7 +133,7 @@
 
                 <div class="col-md-3">
                     <label class="form-label">Game's Winning Multiplier</label>
-                    <input type="number" id="winning-multiplier" class="form-control" placeholder="Enter multiplier" value="1.96">
+                    <input type="number" id="winning-multiplier" class="form-control" placeholder="Enter multiplier" value="1.98">
                 </div>
 
                 <div class="col-md-3">
@@ -207,7 +207,7 @@
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
                     <td>${level}</td>
-                    <td>${currentBet}</td>
+                    <td><input type="number" class="form-control bet-input" value="${currentBet}"></td>
                     <td>${netProfit.toFixed(2)}</td>
                     <td>${totalLoss + currentBet}</td>
                 `;
@@ -217,6 +217,8 @@
                 previousBet = currentBet;
                 level++;
             }
+            attachInputListeners();
+            updateTable();
         }
 
 
@@ -251,14 +253,13 @@
                 totalLoss += betAmount;
 
                 const row = tableBody.rows[index];
-                row.cells[2].textContent = profitIfWon > 0 ? profitIfWon : 0;
+                row.cells[2].textContent = profitIfWon > 0 ? profitIfWon.toFixed(2) : 0;
                 row.cells[3].textContent = totalLoss;
 
                 if (betAmount > 0) {
                     bettingLevels.push(betAmount);
                 }
             });
-
             document.getElementById('betting-levels').textContent = bettingLevels.join('+');
 
             const lastInput = inputs[inputs.length - 1];
@@ -293,7 +294,7 @@
                 newRow.innerHTML = `
                     <td>${level}</td>
                     <td><input type="number" class="form-control bet-input" value="${currentBet}" placeholder="Enter bet amount"></td>
-                    <td>${profitIfWon > 0 ? profitIfWon : 0}</td>
+                    <td>${profitIfWon > 0 ? profitIfWon.toFixed(2) : 0}</td>
                     <td>${totalLoss + currentBet}</td>
                 `;
                 tableBody.appendChild(newRow);
